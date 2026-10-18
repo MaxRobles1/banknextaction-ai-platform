@@ -1,8 +1,8 @@
 # Estado del proyecto — BankNextAction AI
 
 **Repositorio:** `MaxRobles1/banknextaction-ai-platform` · carpeta local `~/Desktop/ProyectoFinal/banknextaction-ai-platform/`
-**Última actualización:** 2026-10-17 (sábado), noche
-**Etapa actual:** E1 — Bootstrap seguro (repositorio nuevo, D-013)
+**Última actualización:** 2026-10-18 (domingo), madrugada
+**Etapa actual:** E1b — publicación en GitHub (E2–E8 implementadas y verificadas en local)
 **Entrega:** el repositorio se evalúa al cierre del **domingo 18-oct-2026**. Demo: lunes 19-oct-2026.
 
 **Estados:** ✅ completada (verificada) · 🔄 en progreso · ⏳ pendiente · ⚠️ bloqueada · ❌ falló · ➖ diferida
@@ -20,8 +20,8 @@
 | E4 | Modelo PyTorch y entrenamiento | ✅ COMPLETADA | Commit local en `feat/torch-mlp`; paro en la época 97, se restaura la 87; checkpoint reanudable; 21 pruebas |
 | E5 | Evaluación, métricas y selección | ✅ COMPLETADA | Se sirve el MLP (elegido con validación); prueba abierta una vez; recibo verificado; 24 pruebas |
 | E6 | FastAPI y pruebas | ✅ COMPLETADA | Commit local en `feat/api`; `/health`, `/predict` y `/docs` probados con uvicorn; 33 pruebas |
-| E7 | Docker reproducible | 🔄 EN PROGRESO | Imagen de 1.5 GB que responde; falta el build desde un clon limpio y la prueba desde el celular |
-| E8 | README, documentación y trazabilidad | ⏳ PENDIENTE | |
+| E7 | Docker reproducible | ✅ COMPLETADA (local) | Build desde un clon limpio OK; 1.5 GB; `/health` 200 por la IP de red; falta la prueba con el celular |
+| E8 | README, documentación y trazabilidad | ✅ COMPLETADA (local) | Comandos del README ejecutados en un clon limpio, con métricas idénticas; matriz completa |
 | E9 | Aplicación web mínima | ⏳ PENDIENTE | P2 |
 | E10 | Extras: Pandera, MLflow, DVC y otros | ⏳ PENDIENTE | P3 |
 | E11 | Auditoría final, presentación y cierre | ⏳ PENDIENTE | |
@@ -161,7 +161,48 @@
   - categorías iguales a las de entrenamiento.
   - En total, 33 de 33 en verde.
 
-## E7–E11 — ⏳
+## E7 · Docker — ✅ (commit `1b396a9`, local)
+- [x] `Dockerfile`:
+  - `python:3.11-slim` con uv 0.13.1 fijo;
+  - `uv sync --locked --no-dev` por capas, con `UV_NO_CACHE`;
+  - `src/`, `configs/` y `models/` adentro; no entrena;
+  - usuario sin privilegios; `EXPOSE 8000`; `CMD` en forma exec con uvicorn en `0.0.0.0`.
+- [x] `.dockerignore`: `/app` solo contiene `src`, `configs`, `models`, `pyproject.toml`, `uv.lock`, `README.md` y `.venv`.
+- [x] Tamaño real de 1.5 GB (era 2.5 GB con la caché de uv; torch CPU ocupa 656 MB). `docker image ls` reporta 1.95 GB.
+- [x] Contenedor:
+  - `/health` 200, con MD5 igual a `modelo.json`;
+  - `/predict` con p = 0.44276, igual que sin Docker;
+  - 422 para entradas inválidas;
+  - `/docs` 200;
+  - carga única del modelo.
+- [x] **Build desde un clon limpio** sin pasos manuales: `/health` y `/predict` responden.
+- [x] Acceso por la IP de red local de la Mac (puerto 8000) → 200, desde la misma Mac.
+- [ ] Prueba desde otro dispositivo (celular), que requiere al autor.
+
+## E8 · README y trazabilidad — ✅ (rama `docs/readme`, local)
+- [x] README:
+  - instalación, ejecución con y sin Docker, endpoints y respuesta real;
+  - problema, dataset, licencia, variables y partición;
+  - resultados con las 3 figuras, la búsqueda, el diagnóstico, la tabla con pisos y la conclusión;
+  - arquitectura, patrón, seguridad, limitaciones y herramientas, incluida la asistencia de IA.
+- [x] Comandos ejecutados **tal cual en un clon limpio**: `uv sync --locked`, `prepare_data`, `train`, `evaluate`, pytest (33) y ruff. Métricas de val y test **idénticas** a las versionadas, así que el pipeline es reproducible. Esa corrida no se usó para ajustar nada.
+- [x] `docs/REQUIREMENTS_TRACEABILITY.md`: los 9 rubros, con su evidencia.
+
+## Publicación (GitHub Flow, Clase 11)
+
+| # | Componente | Rama | Issue | PR | CI `calidad` | Merge |
+|---|---|---|---|---|---|---|
+| 0 | Bootstrap (excepción técnica D-011) | `main` | — | — | — | push directo inicial |
+| 1 | CI y flujo | `ci/flujo-de-trabajo` | pendiente | pendiente | pendiente | pendiente |
+| 2 | Datos | `feat/data-pipeline` | pendiente | pendiente | pendiente | pendiente |
+| 3 | scikit-learn | `feat/baseline-sklearn` | pendiente | pendiente | pendiente | pendiente |
+| 4 | PyTorch | `feat/torch-mlp` | pendiente | pendiente | pendiente | pendiente |
+| 5 | Evaluación y artefactos | `feat/evaluation` | pendiente | pendiente | pendiente | pendiente |
+| 6 | FastAPI | `feat/api` | pendiente | pendiente | pendiente | pendiente |
+| 7 | Docker | `feat/docker` | pendiente | pendiente | pendiente | pendiente |
+| 8 | README y documentación | `docs/readme` | pendiente | pendiente | pendiente | pendiente |
+
+## E9–E11 — ⏳
 Los criterios de aceptación están en el plan aprobado.
 
 ---
@@ -174,9 +215,9 @@ Los criterios de aceptación están en el plan aprobado.
 - Ninguna técnica.
 
 ## Próximos tres pasos
-1. Primer commit del repo nuevo (autorización).
-2. Crear el repo vacío en GitHub, hacer el push (autorización), PR de CI y ruleset.
-3. E2: descarga verificada, manifiesto, EDA y splits.
+1. Primer push (`main` y `ci/flujo-de-trabajo`), con autorización.
+2. Issue y PR de CI, check `calidad` en verde, squash merge y ruleset en `main`.
+3. PRs 2 a 8 en orden, cada uno rebasado sobre el `main` actualizado.
 
 ## Riesgos abiertos
 - Posible cambio de prevalencia de `y` en el tiempo, que afectaría piso y umbral. Se verifica en E2.
