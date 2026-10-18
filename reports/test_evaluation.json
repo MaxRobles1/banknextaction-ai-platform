@@ -1,0 +1,70 @@
+{
+  "evaluated_at": "2026-10-18T04:19:30+00:00",
+  "served": "mlp",
+  "models": {
+    "logreg": {
+      "validation": {
+        "split": "val",
+        "rows": 6782,
+        "prevalence": 0.1152,
+        "threshold": 0.06,
+        "roc_auc": 0.656,
+        "pr_auc": 0.2332,
+        "f1": 0.2759,
+        "precision": 0.1912,
+        "recall": 0.4955,
+        "accuracy": 0.7005,
+        "floor_accuracy_majority": 0.8848,
+        "floor_pr_auc_prevalence": 0.1152,
+        "floor_roc_auc_random": 0.5
+      },
+      "test": {
+        "split": "test",
+        "rows": 6782,
+        "prevalence": 0.3934,
+        "threshold": 0.06,
+        "roc_auc": 0.5813,
+        "pr_auc": 0.4564,
+        "f1": 0.5311,
+        "precision": 0.4376,
+        "recall": 0.6754,
+        "accuracy": 0.5308,
+        "floor_accuracy_majority": 0.6066,
+        "floor_pr_auc_prevalence": 0.3934,
+        "floor_roc_auc_random": 0.5
+      }
+    },
+    "mlp": {
+      "validation": {
+        "split": "val",
+        "rows": 6782,
+        "prevalence": 0.1152,
+        "threshold": 0.555,
+        "roc_auc": 0.6781,
+        "pr_auc": 0.2577,
+        "f1": 0.3115,
+        "precision": 0.2543,
+        "recall": 0.402,
+        "accuracy": 0.7953,
+        "floor_accuracy_majority": 0.8848,
+        "floor_pr_auc_prevalence": 0.1152,
+        "floor_roc_auc_random": 0.5
+      },
+      "test": {
+        "split": "test",
+        "rows": 6782,
+        "prevalence": 0.3934,
+        "threshold": 0.555,
+        "roc_auc": 0.6355,
+        "pr_auc": 0.5094,
+        "f1": 0.5608,
+        "precision": 0.4841,
+        "recall": 0.6664,
+        "accuracy": 0.5894,
+        "floor_accuracy_majority": 0.6066,
+        "floor_pr_auc_prevalence": 0.3934,
+        "floor_roc_auc_random": 0.5
+      }
+    }
+  }
+}

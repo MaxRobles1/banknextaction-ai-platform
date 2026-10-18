@@ -1,0 +1,125 @@
+{
+  "model": {
+    "name": "logreg",
+    "best_params": {
+      "model__C": 0.01,
+      "model__class_weight": null
+    }
+  },
+  "threshold": {
+    "threshold": 0.06,
+    "f1": 0.27593582887700535,
+    "criterion": "max F1 on validation",
+    "tie_break": "highest"
+  },
+  "validation": {
+    "split": "val",
+    "rows": 6782,
+    "prevalence": 0.1152,
+    "threshold": 0.06,
+    "roc_auc": 0.656,
+    "pr_auc": 0.2332,
+    "f1": 0.2759,
+    "precision": 0.1912,
+    "recall": 0.4955,
+    "accuracy": 0.7005,
+    "floor_accuracy_majority": 0.8848,
+    "floor_pr_auc_prevalence": 0.1152,
+    "floor_roc_auc_random": 0.5
+  },
+  "train_seconds": 1.76,
+  "artifacts": [
+    "models/baseline_pipeline.joblib"
+  ],
+  "search": {
+    "cv": "TimeSeriesSplit(n_splits=5) on the training split",
+    "refit_metric": "average_precision (PR-AUC)",
+    "best_params": {
+      "model__C": 0.01,
+      "model__class_weight": null
+    },
+    "best_cv_pr_auc": 0.0865,
+    "candidates": [
+      {
+        "params": {
+          "model__C": 0.01,
+          "model__class_weight": null
+        },
+        "cv_pr_auc_mean": 0.0865,
+        "cv_pr_auc_std": 0.0317,
+        "cv_roc_auc_mean": 0.5772,
+        "rank": 1
+      },
+      {
+        "params": {
+          "model__C": 0.01,
+          "model__class_weight": "balanced"
+        },
+        "cv_pr_auc_mean": 0.0833,
+        "cv_pr_auc_std": 0.0271,
+        "cv_roc_auc_mean": 0.5737,
+        "rank": 2
+      },
+      {
+        "params": {
+          "model__C": 0.1,
+          "model__class_weight": null
+        },
+        "cv_pr_auc_mean": 0.0831,
+        "cv_pr_auc_std": 0.0268,
+        "cv_roc_auc_mean": 0.574,
+        "rank": 3
+      },
+      {
+        "params": {
+          "model__C": 0.1,
+          "model__class_weight": "balanced"
+        },
+        "cv_pr_auc_mean": 0.0799,
+        "cv_pr_auc_std": 0.0228,
+        "cv_roc_auc_mean": 0.5681,
+        "rank": 4
+      },
+      {
+        "params": {
+          "model__C": 1.0,
+          "model__class_weight": "balanced"
+        },
+        "cv_pr_auc_mean": 0.0794,
+        "cv_pr_auc_std": 0.0229,
+        "cv_roc_auc_mean": 0.5669,
+        "rank": 5
+      },
+      {
+        "params": {
+          "model__C": 10.0,
+          "model__class_weight": "balanced"
+        },
+        "cv_pr_auc_mean": 0.0793,
+        "cv_pr_auc_std": 0.023,
+        "cv_roc_auc_mean": 0.5668,
+        "rank": 6
+      },
+      {
+        "params": {
+          "model__C": 1.0,
+          "model__class_weight": null
+        },
+        "cv_pr_auc_mean": 0.0787,
+        "cv_pr_auc_std": 0.0235,
+        "cv_roc_auc_mean": 0.5654,
+        "rank": 7
+      },
+      {
+        "params": {
+          "model__C": 10.0,
+          "model__class_weight": null
+        },
+        "cv_pr_auc_mean": 0.078,
+        "cv_pr_auc_std": 0.023,
+        "cv_roc_auc_mean": 0.5631,
+        "rank": 8
+      }
+    ]
+  }
+}

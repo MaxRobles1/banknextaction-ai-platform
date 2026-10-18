@@ -139,6 +139,8 @@ Revisadas en modo lectura: PDF del proyecto, apuntes y cuadernos de las Clases 2
 - **Falsos positivos de detect-secrets:** las sumas SHA-256 públicas, que son cadenas hexadecimales de alta entropía, se marcaron sin desactivar el hook:
   - en el YAML, con `# pragma: allowlist secret (public checksum)` en la línea;
   - en el manifiesto JSON, que no admite comentarios, como entradas auditadas (`is_secret: false`) en `.secrets.baseline`.
+  - Para el recibo `modelo.json` y los reportes, cuyos hashes cambian con cada reentrenamiento, el hook usa `--exclude-lines` acotado a líneas JSON cuya clave termina en `sha256` o `md5` y cuyo valor es hexadecimal puro. Las entradas auditadas del baseline ya no son necesarias.
+  - Prueba negativa: un JSON con credenciales falsas sigue siendo rechazado.
   - Cualquier otro hallazgo sigue bloqueando el commit.
 - **Trazabilidad del manifiesto:** en lugar de un id de commit, que sería circular, el manifiesto guarda `data_code_sha256` (código del paso de datos) y `data_config_sha256` (secciones `data`, `features` y `split`). La prueba `test_committed_manifest_matches_current_data_code_and_config` falla si el manifiesto queda desactualizado.
 
@@ -161,6 +163,24 @@ Revisadas en modo lectura: PDF del proyecto, apuntes y cuadernos de las Clases 2
   - La brecha de nivel se explica en buena parte por la ponderación: `pos_weight` se calcula con la prevalencia de train (5.8 %) y validación tiene el doble de positivos, así que su pérdida ponderada es mayor por construcción.
   - Según la tabla de la Clase 9, mejorar ahora sería "por el lado de los datos": más señal disponible antes del contacto. No compensa añadir más red.
 - **Nota:** por `pos_weight`, las probabilidades del MLP no están calibradas (están desplazadas hacia arriba). Por eso su umbral óptimo de F1 ronda 0.55 y el del baseline 0.06. El umbral se elige y se guarda por modelo, y la API usa el del modelo servido.
+
+### D-016 · 2026-10-17 · Selección del modelo servido y evaluación final (prueba abierta una vez)
+- **Selección (solo validación, D-005):** se sirve el **MLP**, por mayor F1 en validación (0.3115 frente a 0.2759). Latencia p50 de una fila en proceso: 1.46 ms frente a 1.50 ms. Artefactos: 89 KB frente a 7 KB. Queda registrado en `reports/model_selection.json`, escrito **antes** de predecir sobre la prueba.
+- **Resultados** (`reports/model_comparison.md`, umbral de validación aplicado sin cambios):
+
+  | Modelo | Split | Umbral | ROC-AUC | PR-AUC | F1 | Accuracy | Piso accuracy | Piso PR-AUC |
+  |---|---|---|---|---|---|---|---|---|
+  | logreg | val | 0.060 | 0.656 | 0.233 | 0.276 | 0.701 | 0.885 | 0.115 |
+  | logreg | test | 0.060 | 0.581 | 0.456 | 0.531 | 0.531 | 0.607 | 0.393 |
+  | **mlp** | val | 0.555 | 0.678 | 0.258 | 0.312 | 0.795 | 0.885 | 0.115 |
+  | **mlp** | test | 0.555 | 0.636 | 0.509 | 0.561 | 0.589 | 0.607 | 0.393 |
+
+- **Lectura honesta:**
+  - Los dos modelos superan el piso de PR-AUC en ambos splits: en prueba, el MLP lo supera por 0.116 y la regresión logística por 0.063.
+  - La accuracy queda bajo el piso de clase mayoritaria en ambos splits, porque el umbral maximiza F1, no accuracy.
+  - El ROC-AUC baja de validación a prueba (MLP 0.678 → 0.636; logreg 0.656 → 0.581). Es consistente con el cambio de distribución de D-014: cambia el perfil de los contactados, no solo la prevalencia.
+  - El MLP también es mejor en prueba, aunque esa comparación no se usó para elegirlo.
+- **Conclusión para el README:** el MLP conviene, porque ordena mejor a los clientes en ambos periodos y su artefacto es pequeño y rápido. Aun así, la ventaja sobre el piso es modesta: con solo información precontacto la señal es limitada, y el cambio de periodo exige monitoreo y recalibración.
 
 ### D-008 · 2026-10-17 · Roles de Git, DVC y MLflow
 - **Git:** código, configuración, manifiestos, recibo y modelos de menos de 100 MB, incluido el **checkpoint completo** de PyTorch.

@@ -1,0 +1,22 @@
+{
+  "decided_at": "2026-10-18T04:19:30+00:00",
+  "uses": "validation metrics, latency and size only",
+  "served": "mlp",
+  "reason": "higher validation F1 (0.3115 vs 0.2759)",
+  "ranking": [
+    {
+      "name": "mlp",
+      "val_f1": 0.3115,
+      "val_pr_auc": 0.2577,
+      "latency_ms_p50": 1.46,
+      "artifact_bytes": 89388
+    },
+    {
+      "name": "logreg",
+      "val_f1": 0.2759,
+      "val_pr_auc": 0.2332,
+      "latency_ms_p50": 1.499,
+      "artifact_bytes": 6698
+    }
+  ]
+}

@@ -1,0 +1,271 @@
+{
+  "project": "banknextaction",
+  "model_version": "0.1.0",
+  "generated_at": "2026-10-18T04:19:30+00:00",
+  "served_model": "mlp",
+  "decision_threshold": 0.555,
+  "threshold_rule": "max F1 on validation",
+  "selection_reason": "higher validation F1 (0.3115 vs 0.2759)",
+  "models": {
+    "logreg": {
+      "artifacts": [
+        {
+          "file": "models/baseline_pipeline.joblib",
+          "bytes": 6698,
+          "sha256": "a2092def01a8b6ea375ba4b1beeb8d5216b77926976060530163454c7c8f22a2",
+          "md5": "72360a17014d9822fe26bcab9910006f",
+          "created_at": "2026-10-18T04:13:57+00:00"
+        }
+      ],
+      "threshold": 0.06,
+      "metrics": {
+        "validation": {
+          "split": "val",
+          "rows": 6782,
+          "prevalence": 0.1152,
+          "threshold": 0.06,
+          "roc_auc": 0.656,
+          "pr_auc": 0.2332,
+          "f1": 0.2759,
+          "precision": 0.1912,
+          "recall": 0.4955,
+          "accuracy": 0.7005,
+          "floor_accuracy_majority": 0.8848,
+          "floor_pr_auc_prevalence": 0.1152,
+          "floor_roc_auc_random": 0.5
+        },
+        "test": {
+          "split": "test",
+          "rows": 6782,
+          "prevalence": 0.3934,
+          "threshold": 0.06,
+          "roc_auc": 0.5813,
+          "pr_auc": 0.4564,
+          "f1": 0.5311,
+          "precision": 0.4376,
+          "recall": 0.6754,
+          "accuracy": 0.5308,
+          "floor_accuracy_majority": 0.6066,
+          "floor_pr_auc_prevalence": 0.3934,
+          "floor_roc_auc_random": 0.5
+        }
+      },
+      "latency_single_row": {
+        "p50_ms": 1.499,
+        "p95_ms": 1.61,
+        "repeats": 200,
+        "warmup": 20
+      },
+      "description": {
+        "name": "logreg",
+        "best_params": {
+          "model__C": 0.01,
+          "model__class_weight": null
+        }
+      }
+    },
+    "mlp": {
+      "artifacts": [
+        {
+          "file": "models/torch_preprocessor.joblib",
+          "bytes": 5756,
+          "sha256": "5ae158a9be9c5afb2eea09ad363b5f4254ed76d19f3bc8648f792316e80049dd",
+          "md5": "80648c55c06ecaa93b626bdf91add739",
+          "created_at": "2026-10-18T04:14:05+00:00"
+        },
+        {
+          "file": "models/mlp_state.pt",
+          "bytes": 20373,
+          "sha256": "58556ebfe6c6a4d554cd32fd640955193e5de8e5ee60e7629e23215cf9f060b1",
+          "md5": "f561f5a465ab57b6016999b440e79f44",
+          "created_at": "2026-10-18T04:14:05+00:00"
+        },
+        {
+          "file": "models/mlp_checkpoint.pt",
+          "bytes": 63259,
+          "sha256": "91d0433db76b43bbf6f1708a568785058f4d9e060946d218a0f73b82919f8779",
+          "md5": "ed8894aa29e0f5e08701840dd7814018",
+          "created_at": "2026-10-18T04:14:05+00:00"
+        }
+      ],
+      "threshold": 0.555,
+      "metrics": {
+        "validation": {
+          "split": "val",
+          "rows": 6782,
+          "prevalence": 0.1152,
+          "threshold": 0.555,
+          "roc_auc": 0.6781,
+          "pr_auc": 0.2577,
+          "f1": 0.3115,
+          "precision": 0.2543,
+          "recall": 0.402,
+          "accuracy": 0.7953,
+          "floor_accuracy_majority": 0.8848,
+          "floor_pr_auc_prevalence": 0.1152,
+          "floor_roc_auc_random": 0.5
+        },
+        "test": {
+          "split": "test",
+          "rows": 6782,
+          "prevalence": 0.3934,
+          "threshold": 0.555,
+          "roc_auc": 0.6355,
+          "pr_auc": 0.5094,
+          "f1": 0.5608,
+          "precision": 0.4841,
+          "recall": 0.6664,
+          "accuracy": 0.5894,
+          "floor_accuracy_majority": 0.6066,
+          "floor_pr_auc_prevalence": 0.3934,
+          "floor_roc_auc_random": 0.5
+        }
+      },
+      "latency_single_row": {
+        "p50_ms": 1.46,
+        "p95_ms": 1.549,
+        "repeats": 200,
+        "warmup": 20
+      },
+      "description": {
+        "name": "mlp",
+        "architecture": {
+          "n_inputs": 34,
+          "hidden_dims": [
+            64,
+            32
+          ],
+          "dropout": 0.2
+        }
+      }
+    }
+  },
+  "input_schema": {
+    "order": [
+      "age",
+      "balance",
+      "pdays",
+      "previous",
+      "job",
+      "marital",
+      "education",
+      "default",
+      "housing",
+      "loan",
+      "poutcome"
+    ],
+    "numeric": {
+      "age": {
+        "allowed_range": [
+          18,
+          100
+        ],
+        "observed_train_range": [
+          19,
+          94
+        ]
+      },
+      "balance": {
+        "allowed_range": [
+          -100000,
+          1000000
+        ],
+        "observed_train_range": [
+          -8019,
+          98417
+        ]
+      },
+      "pdays": {
+        "allowed_range": [
+          -1,
+          999
+        ],
+        "observed_train_range": [
+          -1,
+          335
+        ]
+      },
+      "previous": {
+        "allowed_range": [
+          0,
+          300
+        ],
+        "observed_train_range": [
+          0,
+          275
+        ]
+      }
+    },
+    "categorical": {
+      "job": [
+        "admin.",
+        "blue-collar",
+        "entrepreneur",
+        "housemaid",
+        "management",
+        "retired",
+        "self-employed",
+        "services",
+        "student",
+        "technician",
+        "unemployed",
+        "unknown"
+      ],
+      "marital": [
+        "divorced",
+        "married",
+        "single"
+      ],
+      "education": [
+        "primary",
+        "secondary",
+        "tertiary",
+        "unknown"
+      ],
+      "default": [
+        "no",
+        "yes"
+      ],
+      "housing": [
+        "no",
+        "yes"
+      ],
+      "loan": [
+        "no",
+        "yes"
+      ],
+      "poutcome": [
+        "failure",
+        "other",
+        "success",
+        "unknown"
+      ]
+    }
+  },
+  "data": {
+    "dataset_sha256": "d1513ec63b385506f7cfce9f2c5caa9fe99e7ba4e8c3fa264b3aaf0f849ed32d",
+    "data_code_sha256": "ce2732b5fdb6fe7b1ee2278dd9c2971ba0a7945759372f8f6b20bb652d420e3b",
+    "split_boundaries": {
+      "train": [
+        0,
+        31647
+      ],
+      "val": [
+        31647,
+        38429
+      ],
+      "test": [
+        38429,
+        45211
+      ]
+    }
+  },
+  "versions": {
+    "python": "3.11.17",
+    "numpy": "2.4.6",
+    "pandas": "3.0.6",
+    "scikit-learn": "1.9.1",
+    "torch": "2.14.1",
+    "joblib": "1.6.0"
+  }
+}
