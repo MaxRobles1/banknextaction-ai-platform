@@ -20,7 +20,7 @@
 | E4 | Modelo PyTorch y entrenamiento | ✅ COMPLETADA | Commit local en `feat/torch-mlp`; paro en la época 97, se restaura la 87; checkpoint reanudable; 21 pruebas |
 | E5 | Evaluación, métricas y selección | ✅ COMPLETADA | Se sirve el MLP (elegido con validación); prueba abierta una vez; recibo verificado; 24 pruebas |
 | E6 | FastAPI y pruebas | ✅ COMPLETADA | Commit local en `feat/api`; `/health`, `/predict` y `/docs` probados con uvicorn; 33 pruebas |
-| E7 | Docker reproducible | ⏳ PENDIENTE | |
+| E7 | Docker reproducible | 🔄 EN PROGRESO | Imagen de 1.5 GB que responde; falta el build desde un clon limpio y la prueba desde el celular |
 | E8 | README, documentación y trazabilidad | ⏳ PENDIENTE | |
 | E9 | Aplicación web mínima | ⏳ PENDIENTE | P2 |
 | E10 | Extras: Pandera, MLflow, DVC y otros | ⏳ PENDIENTE | P3 |
