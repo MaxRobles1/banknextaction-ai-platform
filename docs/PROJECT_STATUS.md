@@ -15,8 +15,8 @@
 | E0 | Verificación del entorno | ✅ COMPLETADA | Git 2.50.1, Docker 29.7.2, uv 0.13.1 |
 | E1 | Bootstrap seguro, Git y pre-commit | 🔄 EN PROGRESO | Repo nuevo con historial limpio; falta autorizar el primer commit y el push |
 | E1b | GitHub, protección de main y CI | ⏳ PENDIENTE | Repo nuevo, PR de CI, check `calidad`, ruleset |
-| E2 | Dataset, trazabilidad, EDA y particiones | ⏳ PENDIENTE | |
-| E3 | Pipeline y modelo scikit-learn | ⏳ PENDIENTE | |
+| E2 | Dataset, trazabilidad, EDA y particiones | ✅ COMPLETADA | Commit `29d6058` (local); SHA-256, manifiesto, splits y 8 verificaciones |
+| E3 | Pipeline y modelo scikit-learn | ✅ COMPLETADA | Commit local en `feat/baseline-sklearn`; GridSearchCV + TimeSeriesSplit; 16 pruebas |
 | E4 | Modelo PyTorch y entrenamiento | ⏳ PENDIENTE | |
 | E5 | Evaluación, métricas y selección | ⏳ PENDIENTE | |
 | E6 | FastAPI y pruebas | ⏳ PENDIENTE | |
@@ -59,7 +59,7 @@
 - [ ] Contributors: solo `MaxRobles1`.
 - [ ] Repo anterior `MaxRobles1/banknextaction-ai` eliminado manualmente por el autor, después de verificar el nuevo.
 
-## E2 · Datos y trazabilidad — 🔄 (implementado y verificado en local; falta su commit/PR)
+## E2 · Datos y trazabilidad — ✅ (commit `29d6058` en `feat/data-pipeline`; PR pendiente de push)
 - [x] `scripts/prepare_data.py`: descarga de UCI, extracción del zip anidado y verificación SHA-256 `d1513ec6…` (falla si no coincide). *Verificado:* descarga real y segunda corrida "already present and verified".
 - [x] `data/manifests/bank_full.json`:
   - licencia CC BY 4.0, DOI 10.24432/C5K306, cita, fecha de obtención y esquema;
@@ -77,12 +77,38 @@
   - `utils/`: logging, decorador `@timed`, hashes y el context manager `atomic_write`;
   - `data/`: `fetch`, `load` (dtypes explícitos), `split` y `manifest`.
 - [x] 7 pruebas nuevas en `tests/test_data.py`, con datos sintéticos (no requieren el dataset real): 8 de 8 en verde. ruff limpio.
-- [ ] Commit y PR `feat/data-pipeline` (requieren autorización).
+- [x] Commit `29d6058 feat(data): add verified download, manifest and chronological split`.
+- [ ] PR (requiere push autorizado).
 - [x] Prueba de manifiesto desactualizado: 9 de 9 en verde.
 - **Hallazgo documentado (D-014):** fuerte cambio de prevalencia en el tiempo. El piso se reporta por partición. ROC-AUC no depende directamente de la prevalencia, pero puede cambiar si cambian las distribuciones de puntuaciones por clase.
 
-## E3–E11 — ⏳
-Los criterios de aceptación de cada etapa están en el plan aprobado y se desglosarán aquí al iniciarla.
+## E3 · Baseline scikit-learn — ✅ (commit local en `feat/baseline-sklearn`)
+- [x] `features/preprocess.py`, un `ColumnTransformer` que:
+  - escala `age`;
+  - aplica log con signo y escala a `balance` y `previous` (NumPy vectorizado);
+  - convierte `pdays` en indicador de contacto previo más días transcurridos;
+  - aplica one-hot a 7 categóricas, ignorando categorías nuevas.
+- [x] `models/base.py`: `BaseModel` (ABC) con `from_config`, `fit`, `predict_proba`, `save`, `load` y `predict`.
+- [x] `models/registry.py`: patrón **Strategy + Factory** (`@register_model` y `create_model`).
+- [x] `models/sklearn_model.py`: `Pipeline(ColumnTransformer + LogisticRegression)`, con `GridSearchCV` sobre `C` × `class_weight` (8 combinaciones) y `TimeSeriesSplit(5)` **solo en train**; la preparación se reajusta en cada fold.
+- [x] `evaluation/metrics.py`:
+  - ROC-AUC, PR-AUC, F1, precisión, recall y accuracy, con pisos;
+  - umbral de máximo F1 en validación, vectorizado, con desempate por el umbral mayor.
+- [x] `scripts/train.py`: solo usa train y val; la prueba queda sellada.
+- [x] Resultado medido (validación; no es el resultado final):
+  - **Mejores hiperparámetros:** `C=0.01`, sin `class_weight`, con PR-AUC de CV de 0.0865 ± 0.032.
+  - **Umbral:** 0.060.
+  - **Métricas:** ROC-AUC 0.656, PR-AUC 0.233 (piso 0.115), F1 0.276, precisión 0.191, recall 0.496, accuracy 0.700 (piso 0.885; el umbral optimiza F1, no accuracy).
+- [x] 7 pruebas nuevas:
+  - preprocesamiento sin NaN, ajustado solo con train y tolerante a categorías nuevas;
+  - salida `(n,)` en [0, 1] y recarga idéntica;
+  - desempate del umbral;
+  - F1 vectorizado igual al de `evaluate`.
+  - En total, 16 de 16 en verde.
+- Artefactos (`models/*.joblib`) y reportes JSON se versionan en E5, junto con el recibo final.
+
+## E4–E11 — ⏳
+Los criterios de aceptación están en el plan aprobado.
 
 ---
 
