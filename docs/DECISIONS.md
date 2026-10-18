@@ -146,7 +146,7 @@ Revisadas en modo lectura: PDF del proyecto, apuntes y cuadernos de las Clases 2
 
 ### D-015 · 2026-10-17 · MLP: tasa de aprendizaje y diagnóstico de curvas (Clase 9 §4.2)
 - **Arquitectura:**
-  - capas `Linear(31→64) → ReLU → Dropout(0.2) → Linear(64→32) → ReLU → Dropout(0.2) → Linear(32→1)`;
+  - capas `Linear(34→64) → ReLU → Dropout(0.2) → Linear(64→32) → ReLU → Dropout(0.2) → Linear(32→1)`;
   - pérdida `BCEWithLogitsLoss` con `pos_weight` = negativos / positivos de **train**;
   - optimizador Adam con `weight_decay` 1e-4 y lotes de 256;
   - paro temprano sobre **val PR-AUC** con paciencia 10, restauración de los mejores pesos y checkpoint escrito en la mejor época.
