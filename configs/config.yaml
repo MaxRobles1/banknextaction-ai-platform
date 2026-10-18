@@ -52,9 +52,10 @@ mlp:
   hidden_dims: [64, 32]
   dropout: 0.2
   batch_size: 256
-  learning_rate: 0.001
+  # 1e-3 made validation loss jump (Clase 9, 4th shape); 1e-4 is ~9x steadier (D-015).
+  learning_rate: 0.0001
   weight_decay: 0.0001
-  max_epochs: 100
+  max_epochs: 200
   patience: 10
 
 threshold:

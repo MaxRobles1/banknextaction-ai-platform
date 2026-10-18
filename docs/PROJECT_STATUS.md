@@ -17,7 +17,7 @@
 | E1b | GitHub, protección de main y CI | ⏳ PENDIENTE | Repo nuevo, PR de CI, check `calidad`, ruleset |
 | E2 | Dataset, trazabilidad, EDA y particiones | ✅ COMPLETADA | Commit `29d6058` (local); SHA-256, manifiesto, splits y 8 verificaciones |
 | E3 | Pipeline y modelo scikit-learn | ✅ COMPLETADA | Commit local en `feat/baseline-sklearn`; GridSearchCV + TimeSeriesSplit; 16 pruebas |
-| E4 | Modelo PyTorch y entrenamiento | ⏳ PENDIENTE | |
+| E4 | Modelo PyTorch y entrenamiento | ✅ COMPLETADA | Commit local en `feat/torch-mlp`; paro en la época 97, se restaura la 87; checkpoint reanudable; 21 pruebas |
 | E5 | Evaluación, métricas y selección | ⏳ PENDIENTE | |
 | E6 | FastAPI y pruebas | ⏳ PENDIENTE | |
 | E7 | Docker reproducible | ⏳ PENDIENTE | |
@@ -107,7 +107,26 @@
   - En total, 16 de 16 en verde.
 - Artefactos (`models/*.joblib`) y reportes JSON se versionan en E5, junto con el recibo final.
 
-## E4–E11 — ⏳
+## E4 · Modelo PyTorch — ✅ (commit local en `feat/torch-mlp`)
+- [x] `TabularDataset` (`__len__`, `__getitem__`, float32), `DataLoader` con semilla y `PropensityMLP(nn.Module)` con `forward` explícito.
+- [x] `training/loop.py`:
+  - dos mitades por época: `train()`, y luego `eval()` dentro de `no_grad()`;
+  - `History` por época con pérdidas de train y val, val PR-AUC y val ROC-AUC;
+  - `EarlyStopping` con paciencia y **restauración** de los mejores pesos;
+  - checkpoint completo (pesos, optimizador, época, mejor métrica, arquitectura e historia) escrito en la **mejor** época.
+- [x] El preprocesador se ajusta solo con train y se guarda junto a los pesos (`torch_preprocessor.joblib`, `mlp_state.pt`, `mlp_checkpoint.pt`).
+- [x] Experimento con la tasa (D-015): con 1e-3 la validación brincaba; 1e-4 es 9 veces más estable. Diagnóstico: brecha estable, sin tijeras.
+- [x] Resultado en validación: paro en la época 97, **restaurada la 87**; PR-AUC 0.2577, ROC-AUC 0.6781, F1 0.3115 con umbral 0.555.
+- [x] Figura 2: `reports/figures/02_learning_curves.png`.
+- [x] 5 pruebas nuevas:
+  - forma de la salida `(n,)`;
+  - Dataset float32;
+  - restauración de los mejores pesos;
+  - guardar y recargar con predicción idéntica;
+  - checkpoint completo que se reanuda con el optimizador.
+  - En total, 21 de 21 en verde.
+
+## E5–E11 — ⏳
 Los criterios de aceptación están en el plan aprobado.
 
 ---
