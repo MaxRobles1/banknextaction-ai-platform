@@ -222,6 +222,15 @@ Las decisiones, con sus alternativas y motivos, están en [`docs/DECISIONS.md`](
 - Corre con un usuario sin privilegios.
 - Contiene solo código, configuración y modelos: ni datos, ni cuadernos, ni `.git`.
 
+## Flujo de trabajo en GitHub
+
+- **Protección de `main`:** un ruleset exige pull request, solo squash merge y el check de CI `calidad` (ruff y pytest en GitHub Actions), y bloquea el force push y el borrado.
+- **Un componente por PR:** cada componente entró con un issue, una rama, un PR (con `Closes #n`) y el check en verde. Los PRs son datos #4, scikit-learn #6, PyTorch #8, evaluación #10, API #12 y Docker #14; ver el [historial de `main`](https://github.com/MaxRobles1/banknextaction-ai-platform/commits/main).
+- **Evidencia en [`reports/flujo/`](reports/flujo/):**
+  - configuración del ruleset;
+  - push directo a `main` rechazado con **GH013**;
+  - reglas activas leídas de la API de GitHub.
+
 ## Limitaciones y uso previsto
 
 - **Datos:**

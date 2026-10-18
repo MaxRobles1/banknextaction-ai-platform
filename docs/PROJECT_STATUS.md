@@ -1,8 +1,8 @@
 # Estado del proyecto — BankNextAction AI
 
 **Repositorio:** `MaxRobles1/banknextaction-ai-platform` · carpeta local `~/Desktop/ProyectoFinal/banknextaction-ai-platform/`
-**Última actualización:** 2026-10-18 (domingo), madrugada
-**Etapa actual:** E1b — publicación en GitHub (E2–E8 implementadas y verificadas en local)
+**Última actualización:** 2026-10-18 (domingo), tarde
+**Etapa actual:** E8, PR de documentación (E2–E7 ya integradas en `main` vía PR con CI en verde)
 **Entrega:** el repositorio se evalúa al cierre del **domingo 18-oct-2026**. Demo: lunes 19-oct-2026.
 
 **Estados:** ✅ completada (verificada) · 🔄 en progreso · ⏳ pendiente · ⚠️ bloqueada · ❌ falló · ➖ diferida
@@ -13,18 +13,18 @@
 | Etapa | Entregable | Estado | Evidencia o pendiente |
 |---|---|---|---|
 | E0 | Verificación del entorno | ✅ COMPLETADA | Git 2.50.1, Docker 29.7.2, uv 0.13.1 |
-| E1 | Bootstrap seguro, Git y pre-commit | 🔄 EN PROGRESO | Repo nuevo con historial limpio; falta autorizar el primer commit y el push |
-| E1b | GitHub, protección de main y CI | ⏳ PENDIENTE | Repo nuevo, PR de CI, check `calidad`, ruleset |
-| E2 | Dataset, trazabilidad, EDA y particiones | ✅ COMPLETADA | Commit `29d6058` (local); SHA-256, manifiesto, splits y 8 verificaciones |
-| E3 | Pipeline y modelo scikit-learn | ✅ COMPLETADA | Commit local en `feat/baseline-sklearn`; GridSearchCV + TimeSeriesSplit; 16 pruebas |
-| E4 | Modelo PyTorch y entrenamiento | ✅ COMPLETADA | Commit local en `feat/torch-mlp`; paro en la época 97, se restaura la 87; checkpoint reanudable; 21 pruebas |
-| E5 | Evaluación, métricas y selección | ✅ COMPLETADA | Se sirve el MLP (elegido con validación); prueba abierta una vez; recibo verificado; 24 pruebas |
-| E6 | FastAPI y pruebas | ✅ COMPLETADA | Commit local en `feat/api`; `/health`, `/predict` y `/docs` probados con uvicorn; 33 pruebas |
-| E7 | Docker reproducible | ✅ COMPLETADA (local) | Build desde un clon limpio OK; 1.5 GB; `/health` 200 por la IP de red; falta la prueba con el celular |
-| E8 | README, documentación y trazabilidad | ✅ COMPLETADA (local) | Comandos del README ejecutados en un clon limpio, con métricas idénticas; matriz completa |
-| E9 | Aplicación web mínima | ⏳ PENDIENTE | P2 |
-| E10 | Extras: Pandera, MLflow, DVC y otros | ⏳ PENDIENTE | P3 |
-| E11 | Auditoría final, presentación y cierre | ⏳ PENDIENTE | |
+| E1 | Bootstrap seguro, Git y pre-commit | ✅ COMPLETADA | `bfe2b67` publicado; noreply de `MaxRobles1`; 0 trailers de IA |
+| E1b | GitHub, protección de main y CI | ✅ COMPLETADA | PR #2; ruleset (PR obligatorio, solo squash, check `calidad`, sin force push ni borrado); GH013 probado |
+| E2 | Dataset, trazabilidad, EDA y particiones | ✅ INTEGRADA | Issue #3 → PR #4 (`7b147d7`), `calidad` ✅ |
+| E3 | Pipeline y modelo scikit-learn | ✅ INTEGRADA | Issue #5 → PR #6 (`40a6f26`), `calidad` ✅ |
+| E4 | Modelo PyTorch y entrenamiento | ✅ INTEGRADA | Issue #7 → PR #8 (`4c12638`), `calidad` ✅ |
+| E5 | Evaluación, métricas y selección | ✅ INTEGRADA | Issue #9 → PR #10 (`5cdf7c6`), `calidad` ✅ |
+| E6 | FastAPI y pruebas | ✅ INTEGRADA | Issue #11 → PR #12 (`16ac50c`), `calidad` ✅ (33 pruebas en GitHub) |
+| E7 | Docker reproducible | ✅ INTEGRADA | Issue #13 → PR #14 (`68e5106`), `calidad` ✅; build verificado; falta la prueba con el celular |
+| E8 | README, documentación y trazabilidad | 🔄 EN PR | Rama `docs/readme`: README verificado en un clon limpio, matriz y evidencia de flujo |
+| E9 | Aplicación web mínima | ➖ DIFERIDA | P2, después de la entrega |
+| E10 | Extras: Pandera, MLflow, DVC y otros | ➖ DIFERIDA | P3; GitHub Actions sí funciona (+1) |
+| E11 | Auditoría final, presentación y cierre | ⏳ PENDIENTE | Clon limpio de `main`, prueba con el celular, ensayo de la demo, retiro del repo anterior |
 
 ---
 
@@ -190,17 +190,25 @@
 
 ## Publicación (GitHub Flow, Clase 11)
 
-| # | Componente | Rama | Issue | PR | CI `calidad` | Merge |
-|---|---|---|---|---|---|---|
-| 0 | Bootstrap (excepción técnica D-011) | `main` | — | — | — | push directo inicial |
-| 1 | CI y flujo | `ci/flujo-de-trabajo` | pendiente | pendiente | pendiente | pendiente |
-| 2 | Datos | `feat/data-pipeline` | pendiente | pendiente | pendiente | pendiente |
-| 3 | scikit-learn | `feat/baseline-sklearn` | pendiente | pendiente | pendiente | pendiente |
-| 4 | PyTorch | `feat/torch-mlp` | pendiente | pendiente | pendiente | pendiente |
-| 5 | Evaluación y artefactos | `feat/evaluation` | pendiente | pendiente | pendiente | pendiente |
-| 6 | FastAPI | `feat/api` | pendiente | pendiente | pendiente | pendiente |
-| 7 | Docker | `feat/docker` | pendiente | pendiente | pendiente | pendiente |
-| 8 | README y documentación | `docs/readme` | pendiente | pendiente | pendiente | pendiente |
+Todos los PRs se integraron con **squash merge**, el check `calidad` en verde (requerido por el ruleset) y el cierre automático del issue con `Closes #n`.
+
+| # | Componente | Issue | PR | CI `calidad` | Commit en `main` |
+|---|---|---|---|---|---|
+| 0 | Bootstrap (excepción técnica D-011) | — | — | — | `bfe2b67` (push inicial) |
+| 1 | CI y flujo | [#1](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/1) | [#2](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/2) | ✅ | `27c06ff` |
+| 2 | Datos | [#3](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/3) | [#4](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/4) | ✅ | `7b147d7` |
+| 3 | scikit-learn | [#5](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/5) | [#6](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/6) | ✅ | `40a6f26` |
+| 4 | PyTorch | [#7](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/7) | [#8](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/8) | ✅ | `4c12638` |
+| 5 | Evaluación y artefactos | [#9](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/9) | [#10](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/10) | ✅ | `5cdf7c6` |
+| 6 | FastAPI | [#11](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/11) | [#12](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/12) | ✅ | `16ac50c` |
+| 7 | Docker | [#13](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/13) | [#14](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/14) | ✅ | `68e5106` |
+| 8 | README y documentación | #15 (pendiente) | #16 (pendiente) | — | — |
+
+**Evidencia de la protección de `main`** (`reports/flujo/`):
+- `01_ruleset_pull_request.png`: PR obligatorio, 0 aprobaciones (proyecto individual).
+- `02_ruleset_status_check_calidad.png`: check de estado requerido.
+- `03_push_directo_rechazado_gh013.png`: `git push` directo a `main` rechazado con **GH013** ("Changes must be made through a pull request", "Required status check calidad is expected").
+- `04_rules_main_api.json`: reglas activas leídas de la API pública de GitHub (`deletion`, `non_fast_forward`, `pull_request` con solo squash, `required_status_checks: calidad`).
 
 ## E9–E11 — ⏳
 Los criterios de aceptación están en el plan aprobado.
@@ -215,9 +223,9 @@ Los criterios de aceptación están en el plan aprobado.
 - Ninguna técnica.
 
 ## Próximos tres pasos
-1. Primer push (`main` y `ci/flujo-de-trabajo`), con autorización.
-2. Issue y PR de CI, check `calidad` en verde, squash merge y ruleset en `main`.
-3. PRs 2 a 8 en orden, cada uno rebasado sobre el `main` actualizado.
+1. PR de documentación (issue #15 → PR #16) y su merge.
+2. Auditoría final desde un clon limpio de `main`: pruebas, comandos del README, Docker, `/health`, `/predict` y `/docs`, y prueba desde el celular.
+3. Dictamen y retiro del repositorio anterior (con autorización expresa); ensayo de la demo de 15 minutos.
 
 ## Riesgos abiertos
 - Posible cambio de prevalencia de `y` en el tiempo, que afectaría piso y umbral. Se verifica en E2.

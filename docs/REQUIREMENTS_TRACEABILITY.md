@@ -7,7 +7,7 @@
 - `[~]` implementado y verificado en local, pendiente de publicación o de una acción en GitHub;
 - `[ ]` pendiente.
 
-**Última actualización:** 2026-10-18.
+**Última actualización:** 2026-10-18 (tarde).
 
 ## Núcleo obligatorio (100 %)
 
@@ -45,9 +45,9 @@
 | Métricas con su piso | §5.1.6 | | `reports/model_comparison.md` | piso de accuracy y de PR-AUC por partición | `[x]` |
 | Umbral elegido en validación y aplicado igual en prueba | §5.1.6 | | `evaluation/metrics.py`, `models/modelo.json` | máximo F1 en val (0.555 en el MLP); la API usa el mismo umbral | `[x]` |
 | Tabla comparativa con conclusión | §5.1.6 | | README, `reports/model_comparison.md` | MLP servido; conclusión en dos renglones | `[x]` |
-| `main` protegida, trabajo por PR | §5.1.7 | 10 % | GitHub | ruleset y captura GH013 | `[ ]` requiere push y configuración |
-| Conventional commits | §5.1.7 | | historial | 10 commits locales que cumplen la regla de la Clase 11 | `[~]` |
-| PRs con descripción | §5.1.7 | | GitHub | plantilla `.github/pull_request_template.md` | `[ ]` |
+| `main` protegida, trabajo por PR | §5.1.7 | 10 % | GitHub; `reports/flujo/` | ruleset activo (API) y push directo rechazado con GH013 | `[x]` |
+| Conventional commits | §5.1.7 | | historial de `main` | un commit por PR con título convencional (#2 a #14) | `[x]` |
+| PRs con descripción | §5.1.7 | | GitHub | PRs #2–#14 con qué cambia, por qué, cómo se verificó y `Closes #n` | `[x]` |
 | Hooks corriendo | §5.1.7 | | `.git/hooks` | todos los commits pasaron hooks; ninguno con `--no-verify` | `[x]` |
 | `.gitignore` útil; modelo serializado versionado | §5.1.7 | | `.gitignore`, `models/` | datos crudos, `.env` y `.venv` fuera; 5 artefactos de menos de 100 MB dentro | `[x]` |
 | Dockerfile (slim, lockfile, modelo adentro, `EXPOSE`, `CMD`) | §5.1.8 | 15 % | `Dockerfile` | `python:3.11-slim`, `uv sync --locked`, sin caché, usuario sin privilegios | `[x]` |
@@ -63,7 +63,7 @@
 
 | Extra | Puntos | Estado |
 |---|---|---|
-| GitHub Actions (ruff + pytest en cada PR) | +1 | `[~]` `ci.yml` listo; falta ejecutarlo en GitHub |
+| GitHub Actions (ruff + pytest en cada PR) | +1 | `[x]` check `calidad` en verde en todos los PRs y requerido en `main` |
 | Pandera | +2 | `[ ]` diferido (P3) |
 | MLflow | +2 | `[ ]` diferido (P3) |
 | DVC con remoto funcional | +2 | `[ ]` diferido (P3) |
@@ -81,7 +81,7 @@
 | Control de tamaño y lista permitida en `models/` | pruebas controladas | `[x]` | 17-oct |
 | Autoría | `git log --format='%ae %ce'` | `[x]` 10 de 10 commits con el noreply de `MaxRobles1`; 0 trailers de IA | 18-oct |
 | Integridad de artefactos | `verify_receipt` y `/health` | `[x]` SHA-256 y MD5 coinciden; la API no arranca si no coinciden | 18-oct |
-| Auditoría antes del primer push | historial completo | `[ ]` se repite justo antes del push | |
+| Auditoría antes del primer push | historial completo (578 blobs) | `[x]` 0 secretos, 0 rutas prohibidas, 0 correos personales | 18-oct |
 
 ## Datos
 
