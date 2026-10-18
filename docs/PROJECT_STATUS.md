@@ -19,7 +19,7 @@
 | E3 | Pipeline y modelo scikit-learn | ✅ COMPLETADA | Commit local en `feat/baseline-sklearn`; GridSearchCV + TimeSeriesSplit; 16 pruebas |
 | E4 | Modelo PyTorch y entrenamiento | ✅ COMPLETADA | Commit local en `feat/torch-mlp`; paro en la época 97, se restaura la 87; checkpoint reanudable; 21 pruebas |
 | E5 | Evaluación, métricas y selección | ✅ COMPLETADA | Se sirve el MLP (elegido con validación); prueba abierta una vez; recibo verificado; 24 pruebas |
-| E6 | FastAPI y pruebas | ⏳ PENDIENTE | |
+| E6 | FastAPI y pruebas | ✅ COMPLETADA | Commit local en `feat/api`; `/health`, `/predict` y `/docs` probados con uvicorn; 33 pruebas |
 | E7 | Docker reproducible | ⏳ PENDIENTE | |
 | E8 | README, documentación y trazabilidad | ⏳ PENDIENTE | |
 | E9 | Aplicación web mínima | ⏳ PENDIENTE | P2 |
@@ -143,7 +143,25 @@
 - [x] detect-secrets acotado a las sumas de verificación JSON, con prueba negativa que sigue rechazando credenciales.
 - [x] 3 pruebas nuevas (orden de selección y desempates; recibo que detecta un artefacto alterado). En total, 24 de 24 en verde.
 
-## E6–E11 — ⏳
+## E6 · API FastAPI — ✅ (commit local en `feat/api`)
+- [x] `api/schemas.py`: `ClientFeatures` con `extra="forbid"`, rangos y `Literal` con las categorías de entrenamiento (una prueba verifica que coinciden con el recibo), más `PredictionResponse` y `HealthResponse`.
+- [x] `api/service.py`: `ModelService.load` **verifica el SHA-256 de cada artefacto contra el recibo** (si no coincide, no arranca) y carga el modelo servido mediante el registro. La latencia se mide con `@timed`.
+- [x] `api/app.py`: carga única en el `lifespan`; `GET /health`, `POST /predict`, `GET /docs`, y `/` redirige a `/docs`. Los logs no contienen datos del cliente.
+- [x] Verificado sin Docker (uvicorn y curl):
+  - `/health` 200: `mlp`, v0.1.0, umbral 0.555 y fechas de los artefactos;
+  - `/predict` 200 (p = 0.443 → clase 0; con éxito previo, p = 0.852 → clase 1);
+  - 422 para entrada fuera de rango;
+  - `/docs` 200;
+  - "model loaded once" aparece **1** vez en el log.
+- [x] `tests/test_api.py`, el contrato:
+  - `/health` con el MD5 igual al del archivo;
+  - `/predict` con las llaves prometidas y la clase coherente con el umbral;
+  - probabilidad igual a la del modelo llamado directamente;
+  - 422 por rango, `pdays` inválido, categoría desconocida, campo extra y campo faltante;
+  - categorías iguales a las de entrenamiento.
+  - En total, 33 de 33 en verde.
+
+## E7–E11 — ⏳
 Los criterios de aceptación están en el plan aprobado.
 
 ---
