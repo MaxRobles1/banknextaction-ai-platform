@@ -121,6 +121,27 @@ Revisadas en modo lectura: PDF del proyecto, apuntes y cuadernos de las Clases 2
 - **Repo anterior:** lo eliminará manualmente el autor, solo después de verificar el nuevo. Pueden persistir copias o cachés externos que no controlamos.
 - **Efecto sobre D-012:** la reescritura de autor que describe D-012 aplicó al repo anterior. Aquí la identidad noreply se configura desde el inicio.
 
+### D-014 · 2026-10-17 · Cambio de distribución en el tiempo (limitación y riesgo de producción)
+- **Evidencia medida:** el archivo está ordenado por fecha (mayo 2008 – noviembre 2010; se verificaron 2 saltos de año por el mes). La prevalencia de `y = yes` es:
+
+  | Partición | Filas | Positivos | Negativos | Prevalencia |
+  |---|---|---|---|---|
+  | train | [0, 31647) | 1,840 | 29,807 | 5.81 % |
+  | val | [31647, 38429) | 781 | 6,001 | 11.52 % |
+  | test | [38429, 45211) | 2,668 | 4,114 | 39.34 % |
+
+- **Decisión:** mantener la partición cronológica (PDF §5.1.5). Se reportan prevalencia y piso **por partición**, y la prueba se abre una sola vez al final.
+- **Implicaciones, sin anticipar resultados:**
+  - El umbral elegido en validación se aplica sin cambios a un periodo con otra prevalencia. Precisión, recall y F1 en prueba pueden moverse en cualquier dirección; se reportará lo que se mida.
+  - ROC-AUC no depende directamente de la prevalencia, porque mide el ordenamiento entre clases. Aun así puede cambiar entre periodos si cambian las distribuciones de puntuaciones de cada clase, por ejemplo si cambia el perfil de los clientes contactados.
+  - PR-AUC sí depende de la prevalencia; su piso es la prevalencia de cada partición.
+- **Riesgo de producción:** un modelo de propensión entrenado en un periodo puede descalibrarse cuando cambian la estrategia de campaña o el contexto económico. Mitigación posterior (roadmap): monitoreo de drift, recalibración periódica y variables de contexto (por ejemplo, las macroeconómicas de `bank-additional-full.csv`).
+- **Falsos positivos de detect-secrets:** las sumas SHA-256 públicas, que son cadenas hexadecimales de alta entropía, se marcaron sin desactivar el hook:
+  - en el YAML, con `# pragma: allowlist secret (public checksum)` en la línea;
+  - en el manifiesto JSON, que no admite comentarios, como entradas auditadas (`is_secret: false`) en `.secrets.baseline`.
+  - Cualquier otro hallazgo sigue bloqueando el commit.
+- **Trazabilidad del manifiesto:** en lugar de un id de commit, que sería circular, el manifiesto guarda `data_code_sha256` (código del paso de datos) y `data_config_sha256` (secciones `data`, `features` y `split`). La prueba `test_committed_manifest_matches_current_data_code_and_config` falla si el manifiesto queda desactualizado.
+
 ### D-008 · 2026-10-17 · Roles de Git, DVC y MLflow
 - **Git:** código, configuración, manifiestos, recibo y modelos de menos de 100 MB, incluido el **checkpoint completo** de PyTorch.
 - **DVC (P3):** datos crudos con un remoto funcional aprobado.

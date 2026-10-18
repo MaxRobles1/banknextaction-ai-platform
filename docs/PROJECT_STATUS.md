@@ -59,12 +59,27 @@
 - [ ] Contributors: solo `MaxRobles1`.
 - [ ] Repo anterior `MaxRobles1/banknextaction-ai` eliminado manualmente por el autor, después de verificar el nuevo.
 
-## E2 · Datos y trazabilidad — ⏳
-- [ ] `scripts/fetch_data.py` con verificación de SHA-256.
-- [ ] `data/manifests/bank_full.json` con fuente, licencia, esquema, hash, cortes y commit.
-- [ ] EDA y figura 1.
-- [ ] Splits cronológicos con los índices registrados.
-- [ ] Prueba de carga de datos.
+## E2 · Datos y trazabilidad — 🔄 (implementado y verificado en local; falta su commit/PR)
+- [x] `scripts/prepare_data.py`: descarga de UCI, extracción del zip anidado y verificación SHA-256 `d1513ec6…` (falla si no coincide). *Verificado:* descarga real y segunda corrida "already present and verified".
+- [x] `data/manifests/bank_full.json`:
+  - licencia CC BY 4.0, DOI 10.24432/C5K306, cita, fecha de obtención y esquema;
+  - 45,211 filas y 17 columnas;
+  - variables incluidas y excluidas, criterios de limpieza, cortes, semilla, SHA-256 de la configuración y huella `data_code_sha256`, que evita la dependencia circular con el id de commit (D-014).
+- [x] Splits cronológicos [0, 31647) / [31647, 38429) / [38429, 45211), sin barajar. *Verificado:* sin solape y cubren las 45,211 filas; orden y valores idénticos al CSV original (comparación fila por fila); 2 saltos de año por el mes, compatible con el orden documentado.
+- [x] Prevalencia y piso por conjunto, medidos:
+  - train 5.81 % (piso 0.9419);
+  - val 11.52 % (piso 0.8848);
+  - test 39.34 % (piso 0.6066).
+- [x] Figura 1 `reports/figures/01_eda.png`: tasa a lo largo del tiempo con los cortes, y tasa por `poutcome`.
+- [x] Cuaderno de exploración `notebooks/01_eda.ipynb`: usa las funciones de `src/` y ejecuta sin errores.
+- [x] Código del paso de datos:
+  - `config.py`: dataclasses que validan al cargar;
+  - `utils/`: logging, decorador `@timed`, hashes y el context manager `atomic_write`;
+  - `data/`: `fetch`, `load` (dtypes explícitos), `split` y `manifest`.
+- [x] 7 pruebas nuevas en `tests/test_data.py`, con datos sintéticos (no requieren el dataset real): 8 de 8 en verde. ruff limpio.
+- [ ] Commit y PR `feat/data-pipeline` (requieren autorización).
+- [x] Prueba de manifiesto desactualizado: 9 de 9 en verde.
+- **Hallazgo documentado (D-014):** fuerte cambio de prevalencia en el tiempo. El piso se reporta por partición. ROC-AUC no depende directamente de la prevalencia, pero puede cambiar si cambian las distribuciones de puntuaciones por clase.
 
 ## E3–E11 — ⏳
 Los criterios de aceptación de cada etapa están en el plan aprobado y se desglosarán aquí al iniciarla.

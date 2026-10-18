@@ -10,9 +10,15 @@ data:
   source_name: "UCI Bank Marketing (bank-full.csv)"
   dataset_page: "https://archive.ics.uci.edu/dataset/222/bank+marketing"
   download_url: "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip"
-  raw_dir: data/raw
+  # The download is a zip inside a zip: bank+marketing.zip -> bank.zip -> bank-full.csv
+  archive_members: [bank.zip, bank-full.csv]
+  license: "CC BY 4.0"
+  doi: "10.24432/C5K306"
+  citation: "S. Moro, P. Rita and P. Cortez. Bank Marketing. UCI Machine Learning Repository, 2012."
+  ordering: "Rows ordered by date, May 2008 to November 2010 (bank-names.txt)."
+  # Verified on 2026-10-17; fetch_data fails if the file does not match.
+  raw_sha256: "d1513ec63b385506f7cfce9f2c5caa9fe99e7ba4e8c3fa264b3aaf0f849ed32d"  # pragma: allowlist secret (public checksum)
   raw_file: data/raw/bank-full.csv
-  processed_dir: data/processed
   manifest_file: data/manifests/bank_full.json
   separator: ";"
   target: y
