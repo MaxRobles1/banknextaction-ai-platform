@@ -142,6 +142,26 @@ Revisadas en modo lectura: PDF del proyecto, apuntes y cuadernos de las Clases 2
   - Cualquier otro hallazgo sigue bloqueando el commit.
 - **Trazabilidad del manifiesto:** en lugar de un id de commit, que sería circular, el manifiesto guarda `data_code_sha256` (código del paso de datos) y `data_config_sha256` (secciones `data`, `features` y `split`). La prueba `test_committed_manifest_matches_current_data_code_and_config` falla si el manifiesto queda desactualizado.
 
+### D-015 · 2026-10-17 · MLP: tasa de aprendizaje y diagnóstico de curvas (Clase 9 §4.2)
+- **Arquitectura:**
+  - capas `Linear(31→64) → ReLU → Dropout(0.2) → Linear(64→32) → ReLU → Dropout(0.2) → Linear(32→1)`;
+  - pérdida `BCEWithLogitsLoss` con `pos_weight` = negativos / positivos de **train**;
+  - optimizador Adam con `weight_decay` 1e-4 y lotes de 256;
+  - paro temprano sobre **val PR-AUC** con paciencia 10, restauración de los mejores pesos y checkpoint escrito en la mejor época.
+- **Primera corrida (lr 1e-3):** la pérdida de validación **brincaba** (salto medio entre épocas de 0.058, rango 1.74–1.92) mientras la de entrenamiento bajaba suave. Es la cuarta forma de la Clase 9, "ninguna baja, o brincan", cuyo remedio es bajar la tasa 10 veces antes de tocar la arquitectura.
+- **Experimento, decidido solo con validación:**
+
+  | lr | mejor/paro | salto medio val_loss | val PR-AUC | val ROC-AUC | val F1 |
+  |---|---|---|---|---|---|
+  | 1e-3 | 13/23 | 0.058 | 0.2564 | 0.6761 | 0.3145 |
+  | 1e-4 | 87/97 | 0.006 | 0.2577 | 0.6781 | 0.3115 |
+
+- **Decisión:** `lr = 1e-4` (validación 9 veces más estable e igual o mejor PR-AUC; la diferencia de F1 es ruido) y `max_epochs = 200`, para que el paro temprano, no el tope, termine el entrenamiento.
+- **Diagnóstico final:** las dos pérdidas bajan juntas y luego se aplanan, con una brecha **estable** que no crece. No hay tijeras, es decir, no memoriza.
+  - La brecha de nivel se explica en buena parte por la ponderación: `pos_weight` se calcula con la prevalencia de train (5.8 %) y validación tiene el doble de positivos, así que su pérdida ponderada es mayor por construcción.
+  - Según la tabla de la Clase 9, mejorar ahora sería "por el lado de los datos": más señal disponible antes del contacto. No compensa añadir más red.
+- **Nota:** por `pos_weight`, las probabilidades del MLP no están calibradas (están desplazadas hacia arriba). Por eso su umbral óptimo de F1 ronda 0.55 y el del baseline 0.06. El umbral se elige y se guarda por modelo, y la API usa el del modelo servido.
+
 ### D-008 · 2026-10-17 · Roles de Git, DVC y MLflow
 - **Git:** código, configuración, manifiestos, recibo y modelos de menos de 100 MB, incluido el **checkpoint completo** de PyTorch.
 - **DVC (P3):** datos crudos con un remoto funcional aprobado.

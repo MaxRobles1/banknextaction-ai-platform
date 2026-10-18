@@ -17,6 +17,7 @@ from banknextaction.config import load_config
 from banknextaction.data.fetch import fetch_dataset
 from banknextaction.data.load import load_dataset
 from banknextaction.data.split import apply_split, chronological_boundaries
+from banknextaction.evaluation.figures import plot_learning_curves
 from banknextaction.evaluation.metrics import choose_threshold_f1, evaluate
 from banknextaction.models import available_models, create_model
 from banknextaction.utils.io import write_json
@@ -63,6 +64,8 @@ def main() -> None:
             report["search"] = model.search.to_dict()
         if getattr(model, "history", None) is not None:
             report["training"] = model.training_summary()
+            figure = cfg.path(cfg.artifacts.figures_dir) / "02_learning_curves.png"
+            plot_learning_curves(report["training"], figure)
         write_json(reports_dir / f"{name}_validation.json", report)
         log.info(
             "%s: threshold=%.3f val F1=%.4f PR-AUC=%.4f ROC-AUC=%.4f (floor acc %.4f)",
