@@ -24,7 +24,7 @@
 | ruff configurado en `pyproject` | §5.1.2 | | `[tool.ruff]` (incluye NPY y T20) | `ruff check .` y `ruff format --check .` en verde | `[x]` |
 | pre-commit (ruff lint/format, trailing, EOF, check-yaml) y más | §5.1.2 | | `.pre-commit-config.yaml` | `pre-commit run --all-files` en verde; pruebas negativas (D-009 a D-011) | `[x]` |
 | logging en `src/` (sin `print`) | §5.1.2 | | `utils/logging.py`, `get_logger(__name__)` | regla ruff T20; logs sin datos del cliente | `[x]` |
-| ≥4 pruebas: carga, transformación, salida del modelo, contrato de la API | §5.1.2 | | `tests/test_data.py`, `test_features_and_baseline.py`, `test_torch_model.py`, `test_api.py` | **33 pruebas** en verde (local y en un clon limpio) | `[x]` |
+| ≥4 pruebas: carga, transformación, salida del modelo, contrato de la API | §5.1.2 | | `tests/test_data.py`, `test_features_and_baseline.py`, `test_torch_model.py`, `test_api.py` | **39 pruebas** en verde (33 del núcleo y 6 de la web) | `[x]` |
 | Clase abstracta | §5.1.3 | 10 % | `models/base.py` (`BaseModel`) | implementada por `LogisticBaseline` y `MlpModel` | `[x]` |
 | Separación de responsabilidades | §5.1.3 | | `data/`, `features/`, `models/`, `training/`, `evaluation/`, `api/` | la carga no entrena; el entrenamiento no conoce la API | `[x]` |
 | Patrón de diseño documentado | §5.1.3 | | `models/registry.py`; README "Arquitectura y decisiones" | Strategy + Factory (registro), en dos renglones | `[x]` |
@@ -56,7 +56,7 @@
 | `POST /predict` con Pydantic y probabilidad | §5.1.8 | | `api/` | 200; 422 por rango, categoría, campo extra o campo faltante | `[x]` |
 | `GET /health` con modelo y fecha | §5.1.8 | | `api/service.py` | `mlp`, v0.1.0, `artifact_created_at`, MD5 igual al del recibo | `[x]` |
 | Modelo cargado al arrancar (una vez) | §5.1.8 | | `api/app.py` (`lifespan`) | "model loaded once" ×1 en los logs del contenedor | `[x]` |
-| Accesible desde otra máquina | §8.3 | | — | `http://<IP-local>:8000/health` → 200 desde la misma Mac por IP de red | `[~]` falta probar desde el celular |
+| Accesible desde otra máquina | §8.3 | | — | celular en la misma red: `/docs`, `/health` 200 y `/predict` 200 (p = 0.44276, igual que en la Mac) | `[x]` |
 | README completo y reproducible | §5.1.9 | 5 % | `README.md` | comandos ejecutados tal cual en un clon limpio, con métricas idénticas | `[x]` |
 
 ## Extras (§5.2, hasta +10)
@@ -67,7 +67,7 @@
 | Pandera | +2 | `[ ]` diferido (P3) |
 | MLflow | +2 | `[ ]` diferido (P3) |
 | DVC con remoto funcional | +2 | `[ ]` diferido (P3) |
-| Interfaz web | +1 | `[ ]` diferido (P2) |
+| Interfaz web | +1 | `[x]` E9: página en `/`, servida por FastAPI en el mismo contenedor; formulario generado desde `/openapi.json`; consume `/predict`; `tests/test_web.py` |
 
 ## Seguridad
 
