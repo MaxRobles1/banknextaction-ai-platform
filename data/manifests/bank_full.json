@@ -1,0 +1,129 @@
+{
+  "dataset": {
+    "name": "UCI Bank Marketing (bank-full.csv)",
+    "page": "https://archive.ics.uci.edu/dataset/222/bank+marketing",
+    "download_url": "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip",
+    "archive_members": [
+      "bank.zip",
+      "bank-full.csv"
+    ],
+    "license": "CC BY 4.0",
+    "doi": "10.24432/C5K306",
+    "citation": "S. Moro, P. Rita and P. Cortez. Bank Marketing. UCI Machine Learning Repository, 2012.",
+    "ordering": "Rows ordered by date, May 2008 to November 2010 (bank-names.txt).",
+    "retrieved_at": "2026-10-18T03:45:48.319600+00:00",
+    "sha256": "d1513ec63b385506f7cfce9f2c5caa9fe99e7ba4e8c3fa264b3aaf0f849ed32d",
+    "rows": 45211,
+    "columns": 17,
+    "schema": {
+      "age": "int64",
+      "job": "category",
+      "marital": "category",
+      "education": "category",
+      "default": "category",
+      "balance": "int64",
+      "housing": "category",
+      "loan": "category",
+      "contact": "category",
+      "day": "int64",
+      "month": "category",
+      "duration": "int64",
+      "campaign": "int64",
+      "pdays": "int64",
+      "previous": "int64",
+      "poutcome": "category",
+      "y": "category"
+    }
+  },
+  "features": {
+    "numeric": [
+      "age",
+      "balance",
+      "pdays",
+      "previous"
+    ],
+    "categorical": [
+      "job",
+      "marital",
+      "education",
+      "default",
+      "housing",
+      "loan",
+      "poutcome"
+    ],
+    "excluded": {
+      "duration": "Duration of the current call: only known after the contact (direct leakage).",
+      "campaign": "Contacts during the current campaign: not known at decision time.",
+      "contact": "Channel of the current contact: decided during the campaign.",
+      "day": "Day of the current contact: decided during the campaign.",
+      "month": "Month of the current contact: decided during the campaign."
+    },
+    "target": "y",
+    "positive_label": "yes"
+  },
+  "cleaning": [
+    "Raw file is immutable: verified by SHA-256 and never written back.",
+    "Explicit dtypes: int64 for numeric columns, category for text columns.",
+    "No null values in the raw file (checked at load time; loading fails otherwise).",
+    "'unknown' is kept as its own category: it carries information (e.g. no previous campaign).",
+    "pdays == -1 means 'never contacted before'; handled in the feature step with an indicator.",
+    "Target y mapped to 1 (yes) / 0 (no)."
+  ],
+  "split": {
+    "method": "chronological cut on row order (no shuffling)",
+    "fractions": {
+      "train": 0.7,
+      "val": 0.15,
+      "test": 0.15
+    },
+    "boundaries": {
+      "train": [
+        0,
+        31647
+      ],
+      "val": [
+        31647,
+        38429
+      ],
+      "test": [
+        38429,
+        45211
+      ]
+    },
+    "summary": {
+      "train": {
+        "rows": 31647,
+        "positives": 1840,
+        "prevalence": 0.0581,
+        "majority_class_accuracy": 0.9419
+      },
+      "val": {
+        "rows": 6782,
+        "positives": 781,
+        "prevalence": 0.1152,
+        "majority_class_accuracy": 0.8848
+      },
+      "test": {
+        "rows": 6782,
+        "positives": 2668,
+        "prevalence": 0.3934,
+        "majority_class_accuracy": 0.6066
+      }
+    },
+    "cv": "TimeSeriesSplit(n_splits=5) inside train only"
+  },
+  "reproducibility": {
+    "seed": 42,
+    "config_file": "configs/config.yaml",
+    "data_config_sha256": "a862191c25a0e070a50944d96e82c975905f9f195e3cb498be4d6b64aadb2236",
+    "data_code_files": [
+      "src/banknextaction/config.py",
+      "src/banknextaction/data/fetch.py",
+      "src/banknextaction/data/load.py",
+      "src/banknextaction/data/split.py",
+      "src/banknextaction/data/manifest.py"
+    ],
+    "data_code_sha256": "ce2732b5fdb6fe7b1ee2278dd9c2971ba0a7945759372f8f6b20bb652d420e3b",
+    "regenerate_with": "uv run python scripts/prepare_data.py"
+  }
+}
