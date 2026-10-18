@@ -18,7 +18,7 @@
 | E2 | Dataset, trazabilidad, EDA y particiones | ✅ COMPLETADA | Commit `29d6058` (local); SHA-256, manifiesto, splits y 8 verificaciones |
 | E3 | Pipeline y modelo scikit-learn | ✅ COMPLETADA | Commit local en `feat/baseline-sklearn`; GridSearchCV + TimeSeriesSplit; 16 pruebas |
 | E4 | Modelo PyTorch y entrenamiento | ✅ COMPLETADA | Commit local en `feat/torch-mlp`; paro en la época 97, se restaura la 87; checkpoint reanudable; 21 pruebas |
-| E5 | Evaluación, métricas y selección | ⏳ PENDIENTE | |
+| E5 | Evaluación, métricas y selección | ✅ COMPLETADA | Se sirve el MLP (elegido con validación); prueba abierta una vez; recibo verificado; 24 pruebas |
 | E6 | FastAPI y pruebas | ⏳ PENDIENTE | |
 | E7 | Docker reproducible | ⏳ PENDIENTE | |
 | E8 | README, documentación y trazabilidad | ⏳ PENDIENTE | |
@@ -126,7 +126,24 @@
   - checkpoint completo que se reanuda con el optimizador.
   - En total, 21 de 21 en verde.
 
-## E5–E11 — ⏳
+## E5 · Evaluación y selección — ✅ (commit local en `feat/evaluation`)
+- [x] `evaluation/selection.py`: criterios en orden (F1 val → PR-AUC val → latencia p50 → tamaño), con latencia de una fila **medida** (200 repeticiones y 20 de calentamiento).
+- [x] `scripts/evaluate.py`:
+  - escribe `reports/model_selection.json` **antes** de abrir la prueba;
+  - evalúa la prueba una vez con el umbral de validación de cada modelo.
+- [x] Tabla comparativa con pisos: `reports/model_comparison.md` (D-016). **Se sirve el MLP.**
+  - Prueba: PR-AUC 0.509 (piso 0.393), ROC-AUC 0.636, F1 0.561.
+  - Accuracy 0.589, bajo su piso de 0.607, documentado.
+- [x] Figura 3: `reports/figures/03_test_results.png`, con curvas PR en prueba contra el piso y matriz de confusión del MLP en su umbral.
+- [x] Recibo `models/modelo.json`:
+  - modelo servido, umbral, regla y motivo;
+  - por artefacto: SHA-256, MD5, tamaño y fecha;
+  - métricas de val y test, latencias, esquema de entrada (orden, rangos y categorías), hash del dataset y del código de datos, y versiones.
+  - `verify_receipt` no encuentra discrepancias.
+- [x] detect-secrets acotado a las sumas de verificación JSON, con prueba negativa que sigue rechazando credenciales.
+- [x] 3 pruebas nuevas (orden de selección y desempates; recibo que detecta un artefacto alterado). En total, 24 de 24 en verde.
+
+## E6–E11 — ⏳
 Los criterios de aceptación están en el plan aprobado.
 
 ---

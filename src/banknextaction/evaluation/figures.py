@@ -96,3 +96,46 @@ def plot_learning_curves(training: dict[str, Any], path: Path) -> Path:
     fig.savefig(path, dpi=120)
     plt.close(fig)
     return path
+
+
+def plot_results(
+    y_test: np.ndarray,
+    probas: dict[str, np.ndarray],
+    served: str,
+    threshold: float,
+    path: Path,
+) -> Path:
+    """Figure 3: test precision-recall curves vs the prevalence floor, and the confusion
+    matrix of the served model at its validation threshold."""
+    from sklearn.metrics import confusion_matrix, precision_recall_curve  # noqa: PLC0415
+
+    fig, (ax_pr, ax_cm) = plt.subplots(1, 2, figsize=(13, 4.8))
+    for name, proba in probas.items():
+        precision, recall, _ = precision_recall_curve(y_test, proba)
+        ax_pr.plot(recall, precision, lw=1.5, label=name)
+    prevalence = float(np.mean(y_test))
+    ax_pr.axhline(prevalence, color="gray", ls="--", label=f"floor (prevalence {prevalence:.3f})")
+    ax_pr.set_title("Test set: precision-recall curves (opened once)")
+    ax_pr.set_xlabel("Recall")
+    ax_pr.set_ylabel("Precision")
+    ax_pr.set_xlim(0, 1)
+    ax_pr.set_ylim(0, 1)
+    ax_pr.legend()
+
+    predicted = (probas[served] >= threshold).astype(int)
+    matrix = confusion_matrix(y_test, predicted, labels=[0, 1])
+    ax_cm.imshow(matrix, cmap="Blues")
+    for (row, col), count in np.ndenumerate(matrix):
+        color = "white" if count > matrix.max() / 2 else "black"
+        ax_cm.text(col, row, f"{count:,}", ha="center", va="center", color=color, fontsize=12)
+    ax_cm.set_xticks([0, 1], labels=["pred: no", "pred: yes"])
+    ax_cm.set_yticks([0, 1], labels=["true: no", "true: yes"])
+    ax_cm.set_title(f"Test confusion matrix: {served} at validation threshold {threshold:.3f}")
+    ax_cm.set_xlabel("Predicted class")
+    ax_cm.set_ylabel("True class")
+
+    fig.tight_layout()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(path, dpi=120)
+    plt.close(fig)
+    return path

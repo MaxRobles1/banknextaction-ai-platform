@@ -45,7 +45,13 @@ repos:
     rev: v1.5.0
     hooks:
       - id: detect-secrets
-        args: ["--baseline", ".secrets.baseline"]
+        # Only JSON checksum fields (key ends in sha256/md5, value is pure hex) are skipped:
+        # they are public integrity hashes, not credentials (docs/DECISIONS.md D-014).
+        args:
+          - --baseline
+          - .secrets.baseline
+          - --exclude-lines
+          - '^\s*"[a-z_]*(sha256|md5)": "[0-9a-f]{32,64}",?$'
         exclude: ^uv\.lock$
 
   - repo: https://github.com/kynan/nbstripout
