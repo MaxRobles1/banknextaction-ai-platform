@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="BankNextAction AI: score de propensión para priorización comercial de depósitos a plazo." />
+    <title>BankNextAction AI · Scoring</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="container topbar__inner">
+        <div class="brand">
+          <span class="brand__mark" aria-hidden="true">B</span>
+          <div>
+            <p class="brand__name">BankNextAction AI</p>
+            <p class="brand__tagline">Inteligencia comercial para decisiones bancarias</p>
+          </div>
+        </div>
+        <p class="status" id="service-status" role="status">
+          <span class="status__dot" aria-hidden="true"></span>
+          <span class="status__text">Verificando servicio…</span>
+        </p>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="eyebrow">Prototipo de inteligencia comercial · Machine Learning</p>
+        <h1 id="hero-title">Propensión a contratar un depósito a plazo</h1>
+        <p class="hero__lead">
+          Captura el perfil de un cliente <strong>ficticio</strong> con la información disponible
+          antes del contacto de campaña. El modelo entrenado estima la probabilidad de contratación
+          y la compara con el umbral de decisión elegido en validación.
+        </p>
+      </section>
+
+      <div class="layout">
+        <section class="card" aria-labelledby="form-title">
+          <div class="card__header">
+            <h2 id="form-title">Perfil del cliente</h2>
+            <button type="button" class="btn btn--ghost" id="load-example">Cargar ejemplo ficticio</button>
+          </div>
+
+          <form id="scoring-form" novalidate>
+            <div id="form-fields" class="form-groups">
+              <p class="muted" id="form-loading">Cargando el contrato de la API…</p>
+            </div>
+            <p class="form-error" id="form-error" role="alert" hidden></p>
+            <div class="actions">
+              <button type="submit" class="btn btn--primary" id="submit-btn" disabled>
+                <span class="btn__label">Calcular propensión</span>
+                <span class="spinner" aria-hidden="true"></span>
+              </button>
+              <button type="reset" class="btn btn--secondary" id="reset-btn">Restablecer formulario</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="card result" aria-labelledby="result-title" aria-live="polite">
+          <h2 id="result-title">Resultado</h2>
+
+          <div class="result__state" id="state-empty">
+            <p class="muted">
+              Completa el perfil y presiona <strong>Calcular propensión</strong> para obtener el score
+              del modelo.
+            </p>
+          </div>
+
+          <div class="result__state" id="state-loading" hidden>
+            <p class="muted">Consultando el modelo…</p>
+          </div>
+
+          <div class="result__state" id="state-error" hidden>
+            <p class="alert" id="result-error"></p>
+          </div>
+
+          <div class="result__state" id="state-success" hidden>
+            <p class="score__label">Probabilidad de contratación</p>
+            <p class="score__value" id="score-value">—</p>
+            <div class="meter" role="img" id="score-meter" aria-label="">
+              <div class="meter__fill" id="meter-fill"></div>
+              <div class="meter__threshold" id="meter-threshold">
+                <span class="meter__threshold-label" id="meter-threshold-label"></span>
+              </div>
+            </div>
+            <p class="decision" id="decision"></p>
+
+            <dl class="facts">
+              <div><dt>Clase predicha</dt><dd id="fact-class">—</dd></div>
+              <div><dt>Umbral de decisión</dt><dd id="fact-threshold">—</dd></div>
+              <div><dt>Modelo</dt><dd id="fact-model">—</dd></div>
+              <div><dt>Tiempo de inferencia</dt><dd id="fact-latency">—</dd></div>
+            </dl>
+          </div>
+
+          <p class="disclaimer">
+            Score orientativo para <strong>priorizar contactos comerciales</strong>, no una decisión
+            automática sobre personas ni asesoría financiera. Modelo ilustrativo entrenado con datos
+            históricos públicos (2008–2010); no prueba el efecto causal de una campaña.
+          </p>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <span>BankNextAction AI · Proyecto Final, Módulo 1 (ITAM)</span>
+        <nav aria-label="Enlaces técnicos">
+          <a href="/docs">API (/docs)</a>
+          <a href="/health">Estado (/health)</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="/static/app.js" defer></script>
+  </body>
+</html>
