@@ -1,0 +1,76 @@
+# =============================================================================
+# BankNextAction AI — .gitignore
+# Preventive policy: nothing sensitive, raw or personal enters the history.
+# =============================================================================
+
+# --- Secrets and credentials -------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+id_rsa*
+id_ed25519*
+id_ecdsa*
+.aws/
+.gcp/
+gcloud/
+*credentials*
+*service-account*.json
+.netrc
+.npmrc
+.pypirc
+secrets/
+.dvc/config.local
+
+# --- Python environments and caches ------------------------------------------
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# --- Data: raw and processed stay local (manifests are versioned) -------------
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.csv
+*.parquet
+*.xlsx
+*.zip
+
+# --- Training outputs that are temporary ------------------------------------
+# Per-epoch checkpoints stay out; the final complete checkpoint lives in models/.
+checkpoints/
+mlruns/
+mlartifacts/
+logs/
+*.log
+registros/
+
+# --- Notebooks ---------------------------------------------------------------
+.ipynb_checkpoints/
+
+# --- Academic and personal documents (never part of the product) -------------
+*.pdf
+*.pptx
+*.docx
+*.doc
+
+# --- OS / editors / local tool settings -------------------------------------
+.DS_Store
+.vscode/
+.idea/
+*.swp
+.claude/

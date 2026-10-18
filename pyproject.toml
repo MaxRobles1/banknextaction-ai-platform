@@ -1,0 +1,68 @@
+[project]
+name = "banknextaction"
+version = "0.1.0"
+description = "BankNextAction AI — Banking Campaign Intelligence & Customer Propensity Platform (ITAM Módulo 1 final project)."
+readme = "README.md"
+authors = [{ name = "Maximino Jiménez Robles" }]
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "joblib>=1.4",
+    "matplotlib>=3.9",
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "pydantic>=2.8",
+    "pyyaml>=6.0",
+    "scikit-learn>=1.5",
+    "torch>=2.4",
+    "uvicorn>=0.30",
+]
+
+[dependency-groups]
+dev = [
+    "detect-secrets>=1.5",
+    "httpx>=0.27",
+    "ipykernel>=6.29",
+    "nbstripout>=0.7",
+    "pre-commit>=3.8",
+    "pytest>=8.3",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/banknextaction"]
+
+# CPU-only torch on Linux (Docker image); macOS uses the default PyPI wheel.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "scripts"]
+extend-exclude = ["notebooks"]
+
+[tool.ruff.lint]
+# E/F/I/UP/B/SIM/NPY are the groups recommended in Clase 2 (§5.2); T20 forbids print() in src/.
+select = ["E", "F", "W", "I", "B", "UP", "N", "SIM", "NPY", "PL", "RUF", "T20"]
+ignore = ["PLR0913", "PLR2004"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["PLR2004", "S101"]
+"scripts/*" = ["T20"]
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

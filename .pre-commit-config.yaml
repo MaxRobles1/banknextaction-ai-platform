@@ -1,0 +1,72 @@
+default_install_hook_types: [pre-commit, commit-msg]
+default_stages: [pre-commit]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: detect-private-key
+      # General size control: everything outside models/ stays small.
+      # --enforce-all checks every file the hook receives, not only newly added ones.
+      - id: check-added-large-files
+        name: check large files (general, 500 KB)
+        args: ["--maxkb=500", "--enforce-all"]
+        exclude: ^models/
+      # models/ keeps its own control: the PDF allows models < 100 MB in git.
+      - id: check-added-large-files
+        name: check large files (models/, 100 MB)
+        args: ["--maxkb=102400", "--enforce-all"]
+        files: ^models/
+
+  - repo: local
+    hooks:
+      # Only the authorized inference artifacts may live in models/ (docs/DECISIONS.md D-009).
+      # language: fail rejects every file that matches `files` and is not in `exclude`.
+      - id: models-allowlist
+        name: models/ only accepts authorized artifacts
+        language: fail
+        entry: "Unauthorized file in models/. Allowed: baseline_pipeline.joblib, torch_preprocessor.joblib, mlp_state.pt, mlp_checkpoint.pt, modelo.json, .gitkeep (see docs/DECISIONS.md D-009)."
+        files: ^models/
+        exclude: ^models/(baseline_pipeline\.joblib|torch_preprocessor\.joblib|mlp_state\.pt|mlp_checkpoint\.pt|modelo\.json|\.gitkeep)$
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.1
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/Yelp/detect-secrets
+    rev: v1.5.0
+    hooks:
+      - id: detect-secrets
+        args: ["--baseline", ".secrets.baseline"]
+        exclude: ^uv\.lock$
+
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.9.1
+    hooks:
+      - id: nbstripout
+
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args: []
+
+  - repo: local
+    hooks:
+      # Exact rule from Clase 11 (C3A): lowercase type, optional lowercase scope, optional "!",
+      # then ": " and a description. conventional-pre-commit alone accepts "Fix:".
+      - id: commit-msg-class-rule
+        name: commit message follows the Clase 11 rule
+        language: pygrep
+        entry: '\A(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9-]+\))?!?: \S'
+        args: [--multiline, --negate]
+        stages: [commit-msg]

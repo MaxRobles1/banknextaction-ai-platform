@@ -1,0 +1,64 @@
+# BankNextAction AI — single source of configuration.
+# Paths are relative to the repository root.
+
+project:
+  name: banknextaction
+  model_version: "0.1.0"
+  seed: 42
+
+data:
+  source_name: "UCI Bank Marketing (bank-full.csv)"
+  dataset_page: "https://archive.ics.uci.edu/dataset/222/bank+marketing"
+  download_url: "https://archive.ics.uci.edu/static/public/222/bank+marketing.zip"
+  raw_dir: data/raw
+  raw_file: data/raw/bank-full.csv
+  processed_dir: data/processed
+  manifest_file: data/manifests/bank_full.json
+  separator: ";"
+  target: y
+  positive_label: "yes"
+
+features:
+  # Only information known BEFORE the current campaign contact.
+  numeric: [age, balance, pdays, previous]
+  categorical: [job, marital, education, default, housing, loan, poutcome]
+  excluded:
+    duration: "Duration of the current call: only known after the contact (direct leakage)."
+    campaign: "Contacts during the current campaign: not known at decision time."
+    contact: "Channel of the current contact: decided during the campaign."
+    day: "Day of the current contact: decided during the campaign."
+    month: "Month of the current contact: decided during the campaign."
+
+split:
+  # Chronological cut on the row order (the source is ordered by date).
+  train_frac: 0.70
+  val_frac: 0.15
+  test_frac: 0.15
+  cv_splits: 5
+
+baseline:
+  param_grid:
+    model__C: [0.01, 0.1, 1.0, 10.0]
+    model__class_weight: [null, balanced]
+  max_iter: 2000
+
+mlp:
+  hidden_dims: [64, 32]
+  dropout: 0.2
+  batch_size: 256
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  max_epochs: 100
+  patience: 10
+
+threshold:
+  criterion: f1
+  grid_size: 199          # thresholds 0.005 ... 0.995
+  tie_break: highest      # equal F1 -> keep the highest threshold
+
+artifacts:
+  models_dir: models
+  checkpoints_dir: checkpoints
+  reports_dir: reports
+  figures_dir: reports/figures
+  receipt_file: models/modelo.json
