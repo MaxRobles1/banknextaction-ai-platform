@@ -1,0 +1,25 @@
+# Only what inference needs enters the build context (Dockerfile copies an explicit list).
+.git
+.github
+.claude
+.venv
+**/__pycache__
+.ruff_cache
+.pytest_cache
+.env
+.env.*
+!.env.example
+data
+checkpoints
+mlruns
+notebooks
+reports
+docs
+tests
+scripts
+*.pdf
+*.pptx
+*.docx
+.DS_Store
+.secrets.baseline
+.pre-commit-config.yaml
