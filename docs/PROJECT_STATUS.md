@@ -1,8 +1,8 @@
 # Estado del proyecto — BankNextAction AI
 
 **Repositorio:** `MaxRobles1/banknextaction-ai-platform` · carpeta local `~/Desktop/ProyectoFinal/banknextaction-ai-platform/`
-**Última actualización:** 2026-10-18 (domingo), tarde
-**Etapa actual:** E9, interfaz web (extra); el núcleo E0–E8 está integrado y verificado
+**Última actualización:** 2026-10-18 (domingo), noche
+**Etapa actual:** cierre. Núcleo E0–E8 y web E9 integrados en `main` y verificados; listo para entregar
 **Entrega:** el repositorio se evalúa al cierre del **domingo 18-oct-2026**. Demo: lunes 19-oct-2026.
 
 **Estados:** ✅ completada (verificada) · 🔄 en progreso · ⏳ pendiente · ⚠️ bloqueada · ❌ falló · ➖ diferida
@@ -22,9 +22,9 @@
 | E6 | FastAPI y pruebas | ✅ INTEGRADA | Issue #11 → PR #12 (`16ac50c`), `calidad` ✅ (33 pruebas en GitHub) |
 | E7 | Docker reproducible | ✅ INTEGRADA | Issue #13 → PR #14 (`68e5106`), `calidad` ✅; build desde un clon limpio de GitHub; probado desde el celular (`/docs`, `/health`, `/predict`) |
 | E8 | README, documentación y trazabilidad | ✅ INTEGRADA | Issue #15 → PR #16 (`e1cf12f`), `calidad` ✅; README reproducido en un clon limpio |
-| E9 | Aplicación web mínima | 🔄 EN PR | Página en `/` servida por FastAPI; formulario desde `/openapi.json`; consume `/predict` real; 6 pruebas nuevas |
+| E9 | Aplicación web mínima | ✅ INTEGRADA | Issue #17 → PR #18 (`9cf89d7`), `calidad` ✅; Docker desde un clon limpio; probada en la Mac y el celular |
 | E10 | Extras: Pandera, MLflow, DVC y otros | ➖ DIFERIDA | P3; GitHub Actions sí funciona (+1) |
-| E11 | Auditoría final, presentación y cierre | 🔄 EN PROGRESO | Clon limpio de `main` OK; celular OK; repo anterior eliminado (404 verificado); falta ensayar la demo |
+| E11 | Auditoría final, presentación y cierre | ✅ LISTO PARA ENTREGAR | Clon limpio de `main`, Docker, celular (API y web) y repo anterior eliminado (404); queda solo el ensayo de la demo |
 
 ---
 
@@ -203,6 +203,7 @@ Todos los PRs se integraron con **squash merge**, el check `calidad` en verde (r
 | 6 | FastAPI | [#11](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/11) | [#12](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/12) | ✅ | `16ac50c` |
 | 7 | Docker | [#13](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/13) | [#14](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/14) | ✅ | `68e5106` |
 | 8 | README y documentación | [#15](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/15) | [#16](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/16) | ✅ | `e1cf12f` |
+| 9 | Interfaz web (E9) | [#17](https://github.com/MaxRobles1/banknextaction-ai-platform/issues/17) | [#18](https://github.com/MaxRobles1/banknextaction-ai-platform/pull/18) | ✅ | `9cf89d7` |
 
 **Evidencia de la protección de `main`** (`reports/flujo/`):
 - `01_ruleset_pull_request.png`: PR obligatorio, 0 aprobaciones (proyecto individual).
@@ -210,14 +211,15 @@ Todos los PRs se integraron con **squash merge**, el check `calidad` en verde (r
 - `03_push_directo_rechazado_gh013.png`: `git push` directo a `main` rechazado con **GH013** ("Changes must be made through a pull request", "Required status check calidad is expected").
 - `04_rules_main_api.json`: reglas activas leídas de la API pública de GitHub (`deletion`, `non_fast_forward`, `pull_request` con solo squash, `required_status_checks: calidad`).
 
-## E9 · Interfaz web — 🔄 (rama `feat/web-scoring`)
+## E9 · Interfaz web — ✅ (issue #17 → PR #18, `9cf89d7`)
 - [x] `src/banknextaction/web/static/` (`index.html`, `styles.css`, `app.js`), servida por la misma app FastAPI: `/` es la página y `/static/*` los recursos. `/health`, `/predict` y `/docs` no cambian.
 - [x] El formulario se construye desde `/openapi.json` (esquema `ClientFeatures`): tipos, rangos y categorías reales; solo las etiquetas están traducidas para negocio.
 - [x] Envía las claves exactas a `/predict`. Muestra probabilidad, clase, umbral, modelo y latencia que devuelve la API, sin inferencia en el navegador.
 - [x] Estados de interfaz: inicial, carga, éxito, errores de validación (cliente y 422) y error de conexión. Sin trazas internas en pantalla.
 - [x] 6 pruebas (`tests/test_web.py`): página, recursos estáticos, API intacta, contrato y ejemplos ficticios válidos. En total, 39 de 39 en verde.
+- [x] Imagen Docker construida desde un clon limpio de `main`. Probada en la Mac y en el celular (misma red local): el perfil base da 44.3 % y el perfil con éxito previo da 85.2 % (supera el umbral).
 
-## E11 · Cierre — 🔄
+## E11 · Cierre — ✅ listo para entregar
 - [x] Auditoría final desde un clon limpio de GitHub: comandos del README, 33 pruebas, ruff, pre-commit, recibo, checkpoint, Docker, `/health`, `/predict` y `/docs`.
 - [x] Prueba desde el celular en la misma red local: `/docs`, `/health` 200 y `/predict` 200 con p = 0.44276.
 - [x] Repositorio anterior `MaxRobles1/banknextaction-ai` eliminado manualmente por el autor; la API de GitHub responde 404. Respaldo local intacto.
@@ -231,9 +233,9 @@ Todos los PRs se integraron con **squash merge**, el check `calidad` en verde (r
 - Ninguna técnica.
 
 ## Próximos tres pasos
-1. PR de la interfaz web (E9) y su merge.
-2. Verificar la web desde el celular y Docker desde un clon limpio de `main`.
-3. Ensayo de la demo de 15 minutos.
+1. Ensayar la demo de 15 minutos (web, curvas, tabla con pisos, recorrido del repo).
+2. Entregar el enlace: https://github.com/MaxRobles1/banknextaction-ai-platform
+3. Después del ITAM: evaluación masiva (CSV, muestra N, Top N, exportación) y extras (Pandera, MLflow, DVC).
 
 ## Riesgos abiertos
 - Posible cambio de prevalencia de `y` en el tiempo, que afectaría piso y umbral. Se verifica en E2.
