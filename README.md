@@ -32,9 +32,19 @@ Los comandos se corren desde la raíz del repositorio. Los modelos entrenados ya
 | 1. Datos: descarga de UCI, verificación SHA-256, manifiesto y figura EDA | `uv run python scripts/prepare_data.py` |
 | 2. Entrenar ambos modelos (solo train y val; umbral en val) | `uv run python scripts/train.py` |
 | 3. Selección con validación y evaluación única en prueba | `uv run python scripts/evaluate.py` |
-| Pruebas (33) | `uv run pytest` |
+| Pruebas (39) | `uv run pytest` |
 | Linter y formato | `uv run ruff check . && uv run ruff format --check .` |
 | Todos los hooks | `uv run pre-commit run --all-files` |
+
+### Interfaz web de scoring
+
+Con el servicio en marcha (con o sin Docker), abre **http://localhost:8000/**. La página lee el contrato de `/predict` desde `/openapi.json`, muestra el formulario con etiquetas de negocio y envía los datos al endpoint real. El resultado incluye la probabilidad, la clase, el umbral, el modelo y la latencia medida; no hay inferencia en el navegador.
+
+**Ejemplo con un perfil ficticio:** presiona **Cargar ejemplo ficticio** y luego **Calcular propensión**.
+- **Primer ejemplo** (41 años, gerencial, sin contacto previo): **44.3 %**, por debajo del umbral de 55.5 %.
+- **Segundo ejemplo** (con éxito en la campaña anterior): supera el umbral.
+
+Desde otro dispositivo de la misma red, abre `http://<IP-de-la-Mac>:8000/`.
 
 ### Servicio sin Docker
 
@@ -73,6 +83,7 @@ Desde otra máquina de la misma red: `ipconfig getifaddr en0` (macOS) da la IP y
 | `GET /health` | Estado, modelo servido, versión, umbral, fecha de los artefactos y sus hashes |
 | `POST /predict` | Valida la entrada con Pydantic (rangos, categorías, `extra="forbid"`; error **422** si no cumple) y devuelve probabilidad, clase y umbral |
 | `GET /docs` | Documentación OpenAPI interactiva |
+| `GET /` | Interfaz web de scoring (HTML/CSS/JS servidos por la misma API) |
 
 ## Problema y dataset
 
@@ -192,8 +203,9 @@ src/banknextaction/
   training/           bucle PyTorch, EarlyStopping, checkpoint
   evaluation/         métricas y pisos, umbral, selección, recibo, figuras
   api/                FastAPI (app, schemas, service)
+  web/static/         interfaz web (index.html, styles.css, app.js)
 scripts/              prepare_data.py, train.py, evaluate.py (lanzadores)
-tests/                pytest (33 pruebas)
+tests/                pytest (39 pruebas)
 configs/config.yaml   rutas, variables, partición, hiperparámetros
 models/               artefactos de inferencia versionados + modelo.json (recibo con SHA-256 y MD5)
 reports/              figuras, métricas, selección y comparación
